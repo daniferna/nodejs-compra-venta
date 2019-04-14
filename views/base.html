@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block titulo %} Wallapop {% endblock %}</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="/stylesheets/style.css"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    {% block scripts %} {% endblock %}
+</head>
+<body>
+
+<!-- Barra de Navegación superior -->
+<nav class="navbar navbar-expand-md navbar-dark bg-info fixed-top">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navBarContent"
+            aria-controls="navBarContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand" href="#">
+        <img src="/images/nube.png" width="30" height="30" class="d-inline-block align-top" alt="">
+        Wallapop
+    </a>
+    <div class="collapse navbar-collapse" id="navBarContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#/offers">Gestión de ofertas</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/users">Gestión de usuarios</a>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item">
+                <a class="nav-link" href="/registrarse">Registrate</a>
+            </li>
+            <li>
+                <a class="nav-link" href="/identificarse">Identifícate</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+<div class="container">
+
+    <script>
+        var mensaje = getUrlParameter('mensaje');
+        var tipoMensaje = getUrlParameter('tipoMensaje');
+        if (mensaje != "") {
+            if (tipoMensaje == "") {
+                tipoMensaje = 'alert-info';
+            }
+            $(".container")
+                .append("<div class='alert " + tipoMensaje + "'>" + mensaje + " </div>");
+        }
+
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' :
+                decodeURIComponent(results[1].replace(/\+/g, ' '));
+        };
+    </script>
+    <!-- Contenido -->
+    {% block contenido_principal %}
+    <!-- Posible contenido por defecto -->
+    {% endblock %}
+
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    <!-- Copyright -->
+    <div class="container" style="text-align: center"> Wallapop NodeJS  &copy;
+        <a href="https://github.com/daniferna/sdi-actividad2-705">Daniel Fernández Aller</a>
+    </div>
+    <!-- Copyright -->
+</footer>
+<!-- Footer -->
+
+</body>
+</html>

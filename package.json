@@ -1,0 +1,22 @@
+{
+  "name": "sdi-actividad2-705",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./app.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "express": "~4.16.0",
+    "express-fileupload": "^1.1.4",
+    "express-session": "^1.16.1",
+    "https": "^1.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^3.2.3",
+    "morgan": "~1.9.0",
+    "request": "^2.88.0",
+    "swig": "^1.4.2"
+  }
+}
