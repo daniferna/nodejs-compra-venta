@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block titulo %} Wallapop {% endblock %}
+{% block contenido_principal %}
+
+<div class="container" style="text-align: center">
+    <h2>Bienvenidos a Wallapop</h2>
+    <h3>Esta es una pagina de compra-venta de articulos y bienes entre particulares.</h3>
+    <br>
+    <h4>Ofertas del usuario</h4>
+    <br>
+    <table class="table table-borderless table-responsive-sm">
+        <thead class="thead-light">
+        <tr>
+            <th scope="col">Título</th>
+            <th scope="col">Descripción</th>
+            <th scope="col">Precio</th>
+            <th scope="col" class="w-25-l"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for offer in offers %}
+        <tr>
+            <th scope="row">{{ offer.title }}</th>
+            <td>{{ offer.description }}</td>
+            <td> {{ offer.value }} &euro;</td>
+            <td><a href="/offer/details/{{ offer.id }}">Detalles</a></td>
+            <td><a href="/offer/edit/{{ offer.id }}">Modificar</a></td>
+            <td><a href="/offer/delete/{{ offer.id }}">Eliminar</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
