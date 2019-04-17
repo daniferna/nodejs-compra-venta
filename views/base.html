@@ -37,9 +37,11 @@
             <li class="nav-item">
                 <a class="nav-link" href="/offers">Gestión de ofertas</a>
             </li>
+            {% if user.isAdmin %}
             <li class="nav-item">
-                <a class="nav-link" href="/users">Gestión de usuarios</a>
+                <a class="nav-link" href="/user/list">Gestión de usuarios</a>
             </li>
+            {% endif %}
             {% endif %}
         </ul>
         <ul class="nav navbar-nav navbar-right">
@@ -53,13 +55,27 @@
             {% endif %}
             {% if userLogged %}
             <li class="nav-item">
-                <button type="button" class="btn btn-secondary">{{ user.name|default('Usuario') }}</button>
+                <button type="button" class="btn btn-info" disabled aria-haspopup="true" aria-expanded="false">
+                    {{user.dinero + '€'|default('¿?&euro;')}}
+                </button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                        {{user.email|default('Usuario')}}
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/logout">Desconectarse</a>
+                    </div>
+                </div>
             </li>
             {% endif %}
         </ul>
     </div>
 </nav>
-
 
 <div class="container">
 
@@ -92,7 +108,7 @@
 <!-- Footer -->
 <footer class="footer">
     <!-- Copyright -->
-    <div class="container" style="text-align: center"> Wallapop NodeJS  &copy;
+    <div class="container" style="text-align: center"> Wallapop NodeJS &copy;
         <a href="https://github.com/daniferna/sdi-actividad2-705">Daniel Fernández Aller</a>
     </div>
     <!-- Copyright -->

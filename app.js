@@ -1,5 +1,5 @@
 // CADENA URL BBDD MONGODB
-// mongodb://admin:EIISDI2018$@tiendamusica-shard-00-00-0jvpg.mongodb.net:27017,tiendamusica-shard-00-01-0jvpg.mongodb.net:27017,tiendamusica-shard-00-02-0jvpg.mongodb.net:27017/test?ssl=true&replicaSet=tiendamusica-shard-0&authSource=admin&retryWrites=true
+// mongodb://admin:claveSegura@wallapop-shard-00-00-ktxou.gcp.mongodb.net:27017,wallapop-shard-00-01-ktxou.gcp.mongodb.net:27017,wallapop-shard-00-02-ktxou.gcp.mongodb.net:27017/test?ssl=true&replicaSet=Wallapop-shard-0&authSource=admin&retryWrites=true
 
 // Módulos
 var express = require('express');
@@ -10,6 +10,7 @@ var crypto = require('crypto');
 var jwt = require('jsonwebtoken');
 var swig = require('swig');
 var mongo = require('mongodb');
+var gestorBDUsers = require('./modules/gestorBDUsers');
 var fs = require('fs');
 var https = require('https');
 var fileUpload = require('express-fileupload');
@@ -17,6 +18,11 @@ var expressSession = require('express-session');
 
 app.set('rest',rest);
 app.set('jwt', jwt);
+
+var initBDs = function(){
+    gestorBDUsers.init(app, mongo);
+};
+initBDs();
 
 app.use(fileUpload());
 app.use(expressSession({
@@ -38,16 +44,18 @@ app.use(express.static('public'));
 
 // Variables
 app.set('port', 8081);
-app.set('db', 'mongodb://admin:EIISDI2018$@tiendamusica-shard-00-00-0jvpg.mongodb.net:27017,tiendamusica-shard-00-01-0jvpg.mongodb.net:27017,tiendamusica-shard-00-02-0jvpg.mongodb.net:27017/test?ssl=true&replicaSet=tiendamusica-shard-0&authSource=admin&retryWrites=true');
+app.set('db', "mongodb://admin:claveSegura@wallapop-shard-00-00-ktxou.gcp.mongodb.net:27017,wallapop-shard-00-01-ktxou.gcp.mongodb.net:27017,wallapop-shard-00-02-ktxou.gcp.mongodb.net:27017/test?ssl=true&replicaSet=Wallapop-shard-0&authSource=admin&retryWrites=true");
 app.set('clave', 'superSegura');
 app.set('crypto', crypto);
 
 //Rutas controladores por lógica
-require("./routes/rusers.js")(app, swig, gestorBDUsers = null); // (app, param1, param2, etc.)
+require("./routes/rusers.js")(app, swig, gestorBDUsers); // (app, param1, param2, etc.)
 //require("./routes/rcanciones.js")(app, swig, gestorBD); // (app, param1, param2, etc.)
 //require("./routes/rapicanciones")(app, gestorBD);
 
 app.get('/', function (req, res) {
+    var userLogged = false;
+    var user = null;
     var datosEjemplo = [
         {
             title: "Ejemplo",
@@ -59,7 +67,11 @@ app.get('/', function (req, res) {
             description: "Hola hola",
             value: 4
         }];
-    var respuesta = swig.renderFile('views/home.html', {offers: datosEjemplo});
+    if (req.session.usuario != null) {
+        user = req.session.usuario;
+        userLogged = true;
+    }
+    var respuesta = swig.renderFile('views/home.html', {offers: datosEjemplo, userLogged: userLogged, user : user});
     res.send(respuesta);
 });
 

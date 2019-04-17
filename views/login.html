@@ -4,6 +4,11 @@
 
 <div class="container">
     <h2>Identifícate</h2>
+    {% if errorGeneral !== '' %}
+    <div class="alert alert-danger text-center" role="alert">
+        {{errorGeneral}}
+    </div>
+    {% endif %}
     <br>
     <form action="/login" class="form-horizontal" method="post">
         <div class="form-group">
@@ -16,7 +21,7 @@
         <div class="form-group">
             <label class="control-label col-sm-2" for="username">Password:</label>
             <div class="col-sm-10">
-                <input class="form-control" name="password" placeholder="Inserte la contraseña"
+                <input class="form-control" name="password" placeholder="Introduzca la contraseña"
                        required="true" type="password"/>
             </div>
         </div>
