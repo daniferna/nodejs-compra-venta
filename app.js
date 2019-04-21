@@ -11,6 +11,7 @@ var jwt = require('jsonwebtoken');
 var swig = require('swig');
 var mongo = require('mongodb');
 var gestorBDUsers = require('./modules/gestorBDUsers');
+var gestorBDOffers = require('./modules/gestorBDOffers');
 var fs = require('fs');
 var https = require('https');
 var fileUpload = require('express-fileupload');
@@ -18,9 +19,12 @@ var expressSession = require('express-session');
 
 app.set('rest',rest);
 app.set('jwt', jwt);
+app.engine('html', swig.renderFile);
+app.set('view engine', 'html');
 
 var initBDs = function(){
     gestorBDUsers.init(app, mongo);
+    gestorBDOffers.init(app, mongo);
 };
 initBDs();
 
@@ -36,6 +40,8 @@ app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Methods", "POST, GET, DELETE, UPDATE, PUT");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, token");
     // Debemos especificar todas las headers que se aceptan. Content-Type , token
+    // Paso el usuario logeado a todas las peticiones
+    res.locals.user = req.session.usuario;
     next();
 });
 app.use(bodyParser.json());
@@ -50,12 +56,10 @@ app.set('crypto', crypto);
 
 //Rutas controladores por lógica
 require("./routes/rusers.js")(app, swig, gestorBDUsers); // (app, param1, param2, etc.)
-//require("./routes/rcanciones.js")(app, swig, gestorBD); // (app, param1, param2, etc.)
+require("./routes/roffers.js")(app, swig, gestorBDOffers); // (app, param1, param2, etc.)
 //require("./routes/rapicanciones")(app, gestorBD);
 
 app.get('/', function (req, res) {
-    var userLogged = false;
-    var user = null;
     var datosEjemplo = [
         {
             title: "Ejemplo",
@@ -67,12 +71,7 @@ app.get('/', function (req, res) {
             description: "Hola hola",
             value: 4
         }];
-    if (req.session.usuario != null) {
-        user = req.session.usuario;
-        userLogged = true;
-    }
-    var respuesta = swig.renderFile('views/home.html', {offers: datosEjemplo, userLogged: userLogged, user : user});
-    res.send(respuesta);
+    res.render('home.html', {offers: datosEjemplo});
 });
 
 app.use(function (err, req, res, next) {

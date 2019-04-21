@@ -33,19 +33,35 @@
     </a>
     <div class="collapse navbar-collapse" id="navBarContent">
         <ul class="navbar-nav mr-auto">
-            {% if userLogged %}
-            <li class="nav-item">
-                <a class="nav-link" href="/offers">Gestión de ofertas</a>
+            {% if user %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" href="#"
+                   aria-haspopup="true" aria-expanded="false">
+                    Gestión de ofertas
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="/offer/add">Añadir oferta</a>
+                    <a class="dropdown-item" href="/">Ver mis ofertas</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/offer/bought">Ver ofertas compradas</a>
+                </div>
             </li>
             {% if user.isAdmin %}
-            <li class="nav-item">
-                <a class="nav-link" href="/user/list">Gestión de usuarios</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" href="#"
+                   aria-haspopup="true" aria-expanded="false">
+                    Gestión de usuarios
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="/user/add">Añadir usuario</a>
+                    <a class="dropdown-item" href="/user/list">Ver usuarios</a>
+                </div>
             </li>
             {% endif %}
             {% endif %}
         </ul>
         <ul class="nav navbar-nav navbar-right">
-            {% if !userLogged %}
+            {% if !user %}
             <li class="nav-item">
                 <a class="nav-link" href="/signup">Registrate</a>
             </li>
@@ -53,7 +69,7 @@
                 <a class="nav-link" href="/login">Identifícate</a>
             </li>
             {% endif %}
-            {% if userLogged %}
+            {% if user %}
             <li class="nav-item">
                 <button type="button" class="btn btn-info" disabled aria-haspopup="true" aria-expanded="false">
                     {{user.dinero + '€'|default('¿?&euro;')}}
@@ -64,10 +80,6 @@
                         {{user.email|default('Usuario')}}
                     </button>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                        <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="/logout">Desconectarse</a>
                     </div>
                 </div>
@@ -78,6 +90,12 @@
 </nav>
 
 <div class="container">
+
+    {% if error !== '' %}
+    <div class="alert alert-danger text-center" role="alert">
+        {{error}}
+    </div>
+    {% endif %}
 
     <script>
         var mensaje = getUrlParameter('mensaje');

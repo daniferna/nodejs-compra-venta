@@ -2,15 +2,13 @@ var User = require('../entities/user');
 
 module.exports = function (app, swig, gestorBDUsers) {
     app.get('/signup', function (req, res) {
-        var respuesta = swig.renderFile('views/signup.html', {});
-        res.send(respuesta);
+        res.render('signup.html');
     });
 
     app.post('/signup', function (req, res) {
         let respuesta = "ERROR";
         if (req.body.password !== req.body.passwordConfirm) {
-            respuesta = swig.renderFile('views/signup.html', {errorPasswordConfirm: "Las contraseñas no coinciden"});
-            res.send(respuesta);
+            res.render('signup.html', {errorPasswordConfirm: "Las contraseñas no coinciden"});
             return;
         }
 
@@ -20,11 +18,9 @@ module.exports = function (app, swig, gestorBDUsers) {
 
         gestorBDUsers.saveUser(usuario, function (id) {
             if (id == null) {
-                respuesta = swig.renderFile('views/signup.html', {errorGeneral: "Se ha producido un error"});
-                res.send(respuesta);
+                res.render('signup.html', {error: "Se ha producido un error"});
             } else if (typeof id === 'string') {
-                respuesta = swig.renderFile('views/signup.html', {errorGeneral: id});
-                res.send(respuesta);
+                res.render('signup.html', {error: id});
             } else {
                 console.log(id);
                 req.session.usuario = usuario;
@@ -43,8 +39,7 @@ module.exports = function (app, swig, gestorBDUsers) {
 
 
     app.get('/login', function (req, res) {
-        var respuesta = swig.renderFile('views/login.html', {});
-        res.send(respuesta);
+        res.render('login.html');
     });
 
     app.post('/login', function (req, res) {
@@ -57,12 +52,11 @@ module.exports = function (app, swig, gestorBDUsers) {
 
         gestorBDUsers.getUser(criterio, function (user) {
             if (user == null) {
-                respuesta = swig.renderFile('views/login.html', {errorGeneral: "Email o contraseña incorrectos"});
-                res.send(respuesta);
+                res.render('login.html', {error: "Email o contraseña incorrectos"});
             } else {
                 req.session.usuario = user;
                 if (user.isAdmin)
-                    res.redirect('/users');
+                    res.redirect('/user/list');
                 else
                     res.redirect("/");
             }
@@ -72,6 +66,61 @@ module.exports = function (app, swig, gestorBDUsers) {
     app.get('/logout', function (req, res) {
         req.session.usuario = null;
         res.redirect('login');
+    });
+
+    app.get('/user/list', function (req, res) {
+        gestorBDUsers.getNormalUsers(function (users) {
+            res.render('user/list', {users})
+        });
+    });
+
+    app.get('/user/edit/:id', function (req, res) {
+        gestorBDUsers.getUser({_id: gestorBDUsers.mongo.ObjectID(req.params.id)}, function (userFound) {
+            if (userFound == null) {
+                gestorBDUsers.getNormalUsers(function (users) {
+                    res.render('user/list', {error: "Ha ocurrido un error al intentar modificar el usuario", users});
+                });
+                return;
+            }
+            res.render('user/edit', {userToModify: userFound});
+        })
+    });
+
+    app.post('/user/edit/:id', function (req, res) {
+        let id = gestorBDUsers.mongo.ObjectID(req.params.id);
+        gestorBDUsers.getUser({_id: id}, function (userFound) {
+            if (userFound == null) {
+                gestorBDUsers.getNormalUsers(function (users) {
+                    res.render('user/list', {error: "Ha ocurrido un error al intentar modificar el usuario", users});
+                });
+                return;
+            }
+            userFound.email = req.body.email;
+            userFound.name = req.body.name;
+            userFound.lastname = req.body.lastName;
+            gestorBDUsers.modifyUser(userFound, function (userAdded) {
+                if (userFound == null) {
+                    gestorBDUsers.getNormalUsers(function (users) {
+                        res.render('user/list', {error: "Ha ocurrido un error al intentar modificar el usuario", users});
+                    });
+                    return;
+                }
+                res.redirect('/user/list');
+            })
+        });
+    });
+
+    app.get('/user/delete/:id', function (req, res) {
+        let id = gestorBDUsers.mongo.ObjectID(req.params.id);
+        gestorBDUsers.removeUser(id, function (userDeleted) {
+            if (userDeleted == null) {
+                gestorBDUsers.getNormalUsers(function (users) {
+                    res.render('user/list', {error: "Ha ocurrido un error al intentar eliminar el usuario", users});
+                });
+                return;
+            }
+            res.redirect('/user/list');
+        });
     });
 
 };

@@ -18,7 +18,7 @@ module.exports = {
                         funcionCallback(null);
                     } else {
                         var collection = db.collection('usuarios');
-                        collection.insertOne(user).then(result => funcionCallback(result.insertedId), err => funcionCallback(null));
+                        collection.insertOne(user).then(result => funcionCallback(result.insertedId), err => funcionCallback(err));
                     }
                     db.close();
                 });
@@ -36,8 +36,42 @@ module.exports = {
             }
             db.close();
         });
-    }
-    ,
+    },
+
+    modifyUser: function(newUser, funcionCallback) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
+            if (err) {
+                funcionCallback(null);
+            } else {
+                var collection = db.collection('usuarios');
+                collection.findOneAndReplace({_id: newUser._id}, newUser).then(value => funcionCallback(value), reason => funcionCallback(null));
+            }
+            db.close();
+        });
+    },
+
+    removeUser: function(userID, funcionCallback) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
+            if (err) {
+                funcionCallback(null);
+            } else {
+                var collection = db.collection('usuarios');
+                collection.findOneAndDelete({_id: userID}).then(value => funcionCallback(value), reason => funcionCallback(null));
+            }
+            db.close();
+        });
+    },
+
+    getNormalUsers: function (funcionCallback) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
+           if (err)
+               funcionCallback(null);
+           else {
+               var collection = db.collection('usuarios');
+               collection.find({isAdmin: false}).toArray((mongoError, users) => funcionCallback(users));
+           }
+        });
+    },
 
 }
 ;

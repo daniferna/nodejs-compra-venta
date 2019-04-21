@@ -8,15 +8,15 @@
     <br>
     <h4>Ofertas del usuario</h4>
     <br>
-    <table class="table table-borderless table-responsive-sm">
+    <table class="table table-responsive-sm">
         <thead class="thead-light">
         <tr>
-            <th scope="col">Título</th>
-            <th scope="col">Descripción</th>
-            <th scope="col">Precio</th>
-            <th scope="col" class="w-25-l"></th>
-            <th scope="col"></th>
-            <th scope="col"></th>
+            <th style="width: 20%" scope="col">Título</th>
+            <th style="width: 35%" scope="col">Descripción</th>
+            <th style="width: 15%" scope="col">Precio</th>
+            <th style="width: 10%" scope="col"></th>
+            <th style="width: 10%" scope="col"></th>
+            <th style="width: 10%" scope="col"></th>
         </tr>
         </thead>
         <tbody>
@@ -25,9 +25,15 @@
             <th scope="row">{{ offer.title }}</th>
             <td>{{ offer.description }}</td>
             <td> {{ offer.value }} &euro;</td>
-            <td><a href="/offer/details/{{ offer.id }}">Detalles</a></td>
-            <td><a href="/offer/edit/{{ offer.id }}">Modificar</a></td>
-            <td><a href="/offer/delete/{{ offer.id }}">Eliminar</a></td>
+            <td>
+                <a class="btn btn-info" role="button" href="/offer/details/{{ offer.id }}">Detalles</a>
+            </td>
+            <td>
+                <a class="btn btn-warning" role="button" href="/offer/edit/{{ offer.id }}">Modificar</a>
+            </td>
+            <td>
+                <a class="btn btn-danger" role="button" href="/offer/delete/{{ offer.id }}">Eliminar</a>
+            </td>
         </tr>
         {% endfor %}
         </tbody>
