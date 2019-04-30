@@ -12,6 +12,7 @@ var swig = require('swig');
 var mongo = require('mongodb');
 var gestorBDUsers = require('./modules/gestorBDUsers');
 var gestorBDOffers = require('./modules/gestorBDOffers');
+var gestorBDConvers = require('./modules/gestorBDConvers');
 var fs = require('fs');
 var https = require('https');
 var fileUpload = require('express-fileupload');
@@ -25,6 +26,7 @@ app.set('view engine', 'html');
 var initBDs = function(){
     gestorBDUsers.init(app, mongo);
     gestorBDOffers.init(app, mongo);
+    gestorBDConvers.init(app, mongo);
 };
 initBDs();
 
@@ -54,10 +56,43 @@ app.set('db', "mongodb://admin:claveSegura@wallapop-shard-00-00-ktxou.gcp.mongod
 app.set('clave', 'superSegura');
 app.set('crypto', crypto);
 
+//Router control token API
+// routerUsuarioToken
+var routerUsuarioToken = express.Router();
+routerUsuarioToken.use(function (req, res, next) {
+    // obtener el token, vía headers (opcionalmente GET y/o POST).
+    var token = req.headers['token'] || req.query.token || req.body.token;
+    if (token != null) {
+        // verificar el token
+        jwt.verify(token, 'shhh!IsASecret', function (err, infoToken) {
+            if (err || (Date.now() / 1000 - infoToken.tiempo) > 240) {
+                res.status(403); // Forbidden
+                res.json({
+                    acceso: false,
+                    error: 'Token invalido o caducado'
+                });
+            } else {
+                // dejamos correr la petición
+                res.usuario = infoToken.usuario;
+                next();
+            }
+        });
+    } else {
+        res.status(403); // Forbidden
+        res.json({
+            acceso: false,
+            mensaje: 'No hay Token'
+        });
+    }
+});
+// Aplicar routerUsuarioToken
+app.use('/api/offer/*', routerUsuarioToken);
+app.use('/api/user/*', routerUsuarioToken);
+
 //Rutas controladores por lógica
 require("./routes/rusers.js")(app, swig, gestorBDUsers); // (app, param1, param2, etc.)
 require("./routes/roffers.js")(app, swig, gestorBDOffers); // (app, param1, param2, etc.)
-//require("./routes/rapicanciones")(app, gestorBD);
+require("./routes/rapi.js")(app, gestorBDUsers, gestorBDOffers, gestorBDConvers);
 
 app.get('/', function (req, res) {
     var datosEjemplo = [

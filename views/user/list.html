@@ -2,10 +2,10 @@
 {% block titulo %} Wallapop {% endblock %}
 {% block contenido_principal %}
 
-<form action="/user/list/delete/" class="form-horizontal" method="post">
+<form class="form-horizontal" method="post">
     <h2>Usuarios</h2>
     <p>Los usuarios que actualmente figuran en el sistema son los siguientes:</p>
-    <table class="table table-responsive-sm">
+    <table id="tableUsers" class="table table-responsive-sm">
         <thead class="thead-light">
         <tr class="text-center">
             <th style="width: 10%" scope="col">Eliminar</th>
@@ -20,7 +20,7 @@
         {% for user in users %}
         <tr class="text-center">
             <td>
-                <input name="chkUserID" type="checkbox"/>
+                <input value="{{user._id.toString()}}" name="chkUserID" type="checkbox"/>
             </td>
             <td>{{user.email}}</td>
             <td>{{user.name}}</td>
@@ -37,5 +37,22 @@
         </button>
     </div>
 </form>
+
+<script>
+    $("#removeUsersButton").click(function (event) {
+        event.preventDefault();
+        var usersIDs = $('input[name="chkUserID"]:checked').map(function () {
+            return this.value;
+        }).get();
+        console.log("selected::::" + usersIDs);
+        $.ajax({
+            url: '/user/list/removeUsers', type: 'post',
+            data: {usersIDs: usersIDs},
+            success: function (response) {
+                location.reload();
+            }
+        });
+    });
+</script>
 
 {% endblock %}

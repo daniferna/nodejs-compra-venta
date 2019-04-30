@@ -3,7 +3,7 @@
 {% block contenido_principal %}
 
 <div class="container" style="text-align: center">
-    <h2>Bienvenidos a Wallapop</h2>
+    <h2>Bienvenido a Wallapop</h2>
     <h3>Esta es una pagina de compra-venta de articulos y bienes entre particulares.</h3>
     <br>
     <h4>Ofertas del usuario</h4>
@@ -23,21 +23,24 @@
         {% for offer in offers %}
         <tr>
             <th scope="row">{{ offer.title }}</th>
-            <td>{{ offer.description }}</td>
+            <td>{{ offer.details }}</td>
             <td> {{ offer.value }} &euro;</td>
             <td>
-                <a class="btn btn-info" role="button" href="/offer/details/{{ offer.id }}">Detalles</a>
+                <a class="btn btn-info" role="button" href="/offer/details/{{ offer._id.toString() }}">Detalles</a>
             </td>
             <td>
-                <a class="btn btn-warning" role="button" href="/offer/edit/{{ offer.id }}">Modificar</a>
+                <a class="btn btn-warning" role="button" href="/offer/edit/{{ offer._id.toString() }}">Modificar</a>
             </td>
             <td>
-                <a class="btn btn-danger" role="button" href="/offer/delete/{{ offer.id }}">Eliminar</a>
+                <a class="btn btn-danger" role="button" href="/offer/delete/{{ offer._id.toString() }}">Eliminar</a>
             </td>
         </tr>
         {% endfor %}
         </tbody>
     </table>
+    {% if offers.length == 0 %}
+    <p>El usuario no tiene ningun producto en venta.</p>
+    {% endif %}
 </div>
 
 {% endblock %}

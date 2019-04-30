@@ -1,0 +1,96 @@
+{% extends "../base.html" %}
+{% block titulo %} Wallapop {% endblock %}
+{% block contenido_principal %}
+
+<div class="container" style="text-align: center">
+    <h2>Ofertas disponibles</h2>
+    <h3>Las ofertas disponibles en este momento en el sistema son las siguientes</h3>
+    <br>
+    <div style="padding-bottom: 8px">
+        <form class="form-inline" method="get" action="/offer/list">
+            <input class="form-control mr-sm-2" type="search" placeholder="Título" name="busqueda" aria-label="Search">
+            <div>
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+                <a class="btn btn-outline-primary" style="align-self: end" role="button" id="refresh"
+                   href="/offer/list">Refrescar</a>
+            </div>
+        </form>
+    </div>
+    <table class="table table-responsive-sm">
+        <thead class="thead-light">
+        <tr>
+            <th style="width: 25%" scope="col">Título</th>
+            <th style="width: 50%" scope="col">Descripción</th>
+            <th style="width: 15%" scope="col">Precio</th>
+            <th style="width: 10%" scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for offer in offers %}
+        <tr>
+            <th scope="row">{{ offer.title }}</th>
+            <td>{{ offer.details }}</td>
+            <td> {{ offer.value }} &euro;</td>
+            {% if !offer.buyer %}
+            {% if user.dinero >= offer.value %}
+            <td>
+                <a class="btn btn-primary" role="button" href="/offer/buy/{{ offer._id.toString() }}">Comprar</a>
+            </td>
+            {% else %}
+            <td>
+                <a class="btn btn-warning disabled" role="button"
+                   href="/offer/buy/{{ offer._id.toString() }}">Dinero</a>
+            </td>
+            {% endif %}
+            {% endif %}
+            {% if offer.buyer %}
+            <td>
+                <a class="btn btn-info disabled" role="button" href="/offer/buy/{{ offer._id.toString() }}">Vendido</a>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% if offers.length == 0 %}
+    <p>No hay ofertas disponibles en este momento.</p>
+    {% endif %}
+</div>
+
+<!-- Sistema de paginación -->
+<nav aria-label="Page navigation bar">
+    <ul class="pagination pg-blue justify-content-center">
+        <li class="page-item" id="prev">
+            <a class="page-link" href="/offer/list?pg={{ actual -1 }}" tabindex="-1">Anterior</a>
+        </li>
+        {% for pagina in paginas %}
+        <li class="page-item" id="pi-{{ pagina}}">
+            <a class="page-link" href="/offer/list?pg={{ pagina }}">{{ pagina }}</a>
+        </li>
+        {% endfor %}
+        <li class="page-item" id="next">
+            <a class="page-link" href="/offer/list?pg={{ actual +1 }}">Siguiente</a>
+        </li>
+        <script>
+            $("#pi-{{ actual}}").addClass("active");
+            if ({{
+                ultimaPg
+            }
+            } ==
+            {
+                {
+                    actual
+                }
+            }
+            )
+            $("#next").addClass("disabled");
+            if (1 == {{
+                actual
+            }
+            })
+            $("#prev").addClass("disabled");
+        </script>
+    </ul>
+</nav>
+
+{% endblock %}

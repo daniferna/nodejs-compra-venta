@@ -1,0 +1,61 @@
+<div id="containerOfertas">
+    <h2>Ofertas disponibles</h2>
+    <h3>Las ofertas disponibles en este momento en el sistema son las siguientes:</h3>
+    <br>
+    <div style="padding-bottom: 8px">
+        <a class="btn btn-outline-primary" style="align-self: end" role="button" id="refresh" href="#"
+           onclick="cargarCanciones()">Refrescar</a>
+    </div>
+    <table class="table table-responsive-sm">
+        <thead class="thead-light">
+        <tr>
+            <th style="width: 20%" scope="col">Título</th>
+            <th style="width: 40%" scope="col">Descripción</th>
+            <th style="width: 15%" scope="col">Precio</th>
+            <th style="width: 25%" scope="col">Email</th>
+        </tr>
+        </thead>
+        <tbody id="tablaCuerpo">
+
+        </tbody>
+    </table>
+</div>
+
+<script>
+    window.history.pushState("", "", "/clienteREST.html?w=ofertasDisponibles");
+
+    var ofertas;
+
+    function cargarCanciones() {
+        $.ajax({
+            url: URLbase + "/offer/list",
+            type: "GET",
+            data: {},
+            dataType: 'json',
+            headers: {"token": token},
+            success: function (respuesta) {
+                ofertas = respuesta;
+                actualizarTabla(ofertas);
+            },
+            error: function (error) {
+                $("#contenedorPrincipal").load("widget-login.html");
+            }
+        });
+    }
+
+    function actualizarTabla(ofertasAMostrar) {
+        $("#tablaCuerpo").empty(); // Vaciar la tabla
+        for (i = 0; i < ofertasAMostrar.length; i++) {
+            $("#tablaCuerpo").append(
+                "<tr id=" + ofertasAMostrar[i]._id + ">" +
+                "<th scope=\"row\">" + ofertasAMostrar[i].title + "</th>" +
+                "<td>" + ofertasAMostrar[i].details + "</td>" +
+                "<td>" + ofertasAMostrar[i].value + "&euro;</td>" +
+                "<td>" + ofertasAMostrar[i].owner.email + "</td>" +
+                "</tr>");
+        }
+    }
+
+    cargarCanciones();
+
+</script>

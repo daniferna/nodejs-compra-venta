@@ -4,9 +4,16 @@ module.exports = class Offer {
         this.owner = owner;
         this.title = title;
         this.details = details;
-        this.value = value;
-        this.date = date;
+        this.value = parseFloat(value);
+        this.setDate(date);
         this.buyer = buyer;
+    }
+
+    setDate(date) {
+        if (date != null && date != "")
+            this.date = date;
+        else
+            this.date = new Date();
     }
 
 };

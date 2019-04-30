@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>{% block titulo %} Wallapop {% endblock %}</title>
+    <title>Wallapop</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" href="/images/tabIcon.ico"/>
@@ -15,23 +15,22 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
-    {% block scripts %} {% endblock %}
+    <script src="/javascripts/cookie.js"></script>
 </head>
 <body>
 
-<!-- Barra de Navegación superior -->
+<!-- Barra de Navegación superior REST-->
 <nav class="navbar navbar-expand-md navbar-dark bg-info fixed-top">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navBarContent"
             aria-controls="navBarContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand" href="/">
+    <a class="navbar-brand" href="/clienteREST.html">
         <img src="/images/nube.png" width="30" height="30" class="d-inline-block align-top" alt="">
         Wallapop
     </a>
     <div class="collapse navbar-collapse" id="navBarContent">
         <ul class="navbar-nav mr-auto">
-            {% if user %}
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" href="#"
                    aria-haspopup="true" aria-expanded="false">
@@ -41,64 +40,15 @@
                     <a class="dropdown-item" href="/offer/add">Añadir oferta</a>
                     <a class="dropdown-item" href="/">Ver mis ofertas</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="/offer/list">Ver ofertas disponibles</a>
+                    <a class="dropdown-item" href="#" onclick="widgetOfertasDisponibles()">Ver ofertas disponibles</a>
                     <a class="dropdown-item" href="/offer/bought">Ver ofertas compradas</a>
                 </div>
             </li>
-            {% if user.isAdmin %}
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" href="#"
-                   aria-haspopup="true" aria-expanded="false">
-                    Gestión de usuarios
-                </a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="/user/add">Añadir usuario</a>
-                    <a class="dropdown-item" href="/user/list">Ver usuarios</a>
-                </div>
-            </li>
-            {% endif %}
-            {% endif %}
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-            {% if !user %}
-            <li class="nav-item">
-                <a class="nav-link" href="/signup">Registrate</a>
-            </li>
-            <li>
-                <a class="nav-link" href="/login">Identifícate</a>
-            </li>
-            {% endif %}
-            {% if user %}
-            <li class="nav-item">
-                <button type="button" class="btn btn-info" disabled aria-haspopup="true" aria-expanded="false">
-                    {{user.dinero + '€'|default('¿?&euro;')}}
-                </button>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
-                        {{user.email|default('Usuario')}}
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="/logout">Desconectarse</a>
-                    </div>
-                </div>
-            </li>
-            {% endif %}
         </ul>
     </div>
 </nav>
 
-<div class="container">
-
-    {% if error !== '' %}
-    <div class="alert alert-danger text-center" role="alert">
-        {{error}}
-    </div>
-    {% endif %}
-    <!-- Contenido -->
-    {% block contenido_principal %}
-    <!-- Posible contenido por defecto -->
-    {% endblock %}
+<div class="container" id="contenedorPrincipal"> <!--  id para identificar -->
 
 </div>
 
@@ -113,4 +63,32 @@
 <!-- Footer -->
 
 </body>
-</html>
+
+<script>
+    var token;
+    var idOfertaSeleccionada;
+    var URLbase = "http://localhost:8081/api";
+    $("#contenedorPrincipal").load("widget-login.html");
+
+    function widgetOfertasDisponibles() {
+        if (Cookies.get('token') != null)
+            $("#contenedorPrincipal").load("widget-ofertasDisponibles.html");
+        else
+            $("#contenedorPrincipal").load("widget-login.html");
+    }
+
+    if (Cookies.get('token') != null) {
+        token = Cookies.get('token');
+        $("#contenedorPrincipal").load("widget-ofertasDisponibles.html");
+    }
+
+    var url = new URL(window.location.href);
+    var w = url.searchParams.get("w");
+    if (w == "login") {
+        $("#contenedorPrincipal").load("widget-login.html");
+    }
+    if (w == "ofertasDisponibles") {
+        $("#contenedorPrincipal").load("widget-ofertasDisponibles.html");
+    }
+
+</script>

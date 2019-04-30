@@ -83,7 +83,7 @@ module.exports = function (app, swig, gestorBDUsers) {
                 return;
             }
             res.render('user/edit', {userToModify: userFound});
-        })
+        });
     });
 
     app.post('/user/edit/:id', function (req, res) {
@@ -112,7 +112,7 @@ module.exports = function (app, swig, gestorBDUsers) {
 
     app.get('/user/delete/:id', function (req, res) {
         let id = gestorBDUsers.mongo.ObjectID(req.params.id);
-        gestorBDUsers.removeUser(id, function (userDeleted) {
+        gestorBDUsers.deleteUser(id, function (userDeleted) {
             if (userDeleted == null) {
                 gestorBDUsers.getNormalUsers(function (users) {
                     res.render('user/list', {error: "Ha ocurrido un error al intentar eliminar el usuario", users});
@@ -123,4 +123,15 @@ module.exports = function (app, swig, gestorBDUsers) {
         });
     });
 
+    app.post('/user/list/removeUsers', function (req, res) {
+        var IDs = new Array(req.body.usersIDs.length);
+        req.body.usersIDs.forEach(id => IDs.push(gestorBDUsers.mongo.ObjectID(id)));
+        gestorBDUsers.deleteUsers(IDs, function (idMongo) {
+            if (idMongo == null) {
+                console.log("Error al intentar borrar el usuario con ID: " + idMongo);
+            } else {
+                res.end();
+            }
+        });
+    });
 };

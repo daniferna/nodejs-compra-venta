@@ -50,13 +50,26 @@ module.exports = {
         });
     },
 
-    removeUser: function(userID, funcionCallback) {
+    deleteUser: function (userID, funcionCallback) {
         this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
             if (err) {
                 funcionCallback(null);
             } else {
                 var collection = db.collection('usuarios');
-                collection.findOneAndDelete({_id: userID}).then(value => funcionCallback(value), reason => funcionCallback(null));
+                collection.deleteOne({_id: userID}).then(value => funcionCallback(value), reason => funcionCallback(null));
+            }
+            db.close();
+        });
+    },
+
+    deleteUsers: function (users, funcionCallback) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
+            if (err) {
+                funcionCallback(null);
+            } else {
+                var collection = db.collection('usuarios');
+                var query = {_id: {$in: users}};
+                collection.deleteMany(query).then(value => funcionCallback(value), reason => funcionCallback(null));
             }
             db.close();
         });

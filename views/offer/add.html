@@ -1,0 +1,42 @@
+{% extends "../base.html" %}
+{% block titulo %} Wallapop {% endblock %}
+{% block contenido_principal %}
+
+<h2>Añadir oferta</h2>
+<br>
+<form action="/offer/add" class="form-horizontal" method="post">
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="title">Titulo:</label>
+        <div class="col-sm-10">
+            <input class="form-control" name="title" placeholder="Consola vieja"
+                   required type="text"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="details">Detalles:</label>
+        <div class="col-sm-10">
+            <input class="form-control" name="details" placeholder="Consola de sobremesa del año 2015"
+                   required type="text"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="date">Fecha de alta:</label>
+        <div class="col-sm-10">
+            <input class="form-control" name="date" type="date" min="{{dateMin}}"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="value">Valor:</label>
+        <div class="col-sm-10">
+            <input class="form-control" required name="value" placeholder="Valor en &euro;"
+                   type="number"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button class="btn btn-primary" type="submit">Enviar</button>
+        </div>
+    </div>
+</form>
+
+{% endblock %}

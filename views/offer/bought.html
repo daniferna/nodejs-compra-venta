@@ -1,0 +1,42 @@
+{% extends "../base.html" %}
+{% block titulo %} Wallapop {% endblock %}
+{% block contenido_principal %}
+
+<div class="container" style="text-align: center">
+    <h2>Ofertas compradas</h2>
+    <h3>Si has comprado algún producto se mostrará a continuación</h3>
+    <br>
+    <div style="padding-bottom: 8px" class="text-left">
+        <a class="btn btn-outline-primary" style="align-self: end" role="button" id="refresh" href="/offer/bought">Refrescar</a>
+    </div>
+    <table class="table table-responsive-sm">
+        <thead class="thead-light">
+        <tr>
+            <th style="width: 20%" scope="col">Título</th>
+            <th style="width: 40%" scope="col">Descripción</th>
+            <th style="width: 10%" scope="col">Precio</th>
+            <th style="width: 20%" scope="col">E-mail</th>
+            <th style="width: 10%" scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for offer in offers %}
+        <tr>
+            <th scope="row">{{ offer.title }}</th>
+            <td>{{ offer.details }}</td>
+            <td> {{ offer.value }} &euro;</td>
+            <td> {{ offer.owner.email }}</td>
+            <td>
+                <a class="btn btn-danger" role="button"
+                   href="/offer/return/{{ offer._id.toString() }}">Devolver</a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% if offers.length == 0 %}
+    <p>Aún no has comprado nada.</p>
+    {% endif %}
+</div>
+
+{% endblock %}
