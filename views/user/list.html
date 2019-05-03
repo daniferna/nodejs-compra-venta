@@ -44,7 +44,6 @@
         var usersIDs = $('input[name="chkUserID"]:checked').map(function () {
             return this.value;
         }).get();
-        console.log("selected::::" + usersIDs);
         $.ajax({
             url: '/user/list/removeUsers', type: 'post',
             data: {usersIDs: usersIDs},

@@ -21,6 +21,7 @@ module.exports = function (app, gestorBDUsers, gestorBDOffers, gestorBDConvers) 
                 res.json({autenticado: false});
             } else {
                 let token = app.get('jwt').sign({usuario: usuario, tiempo: Date.now() / 1000}, "shhh!IsASecret");
+                app.get('logger').info(`User ${req.body.email} has just gained access to the API with this token: ${token}`);
                 res.status(200);
                 res.json({
                     autenticado: true,
@@ -37,6 +38,7 @@ module.exports = function (app, gestorBDUsers, gestorBDOffers, gestorBDConvers) 
                 return res.json({error: "Se ha producido un error"});
             }
             res.status(200);
+            app.get('logger').info(`User ${res.usuario.email} has requested the list of available offers using the API`);
             res.send(JSON.stringify(offers));
         });
     });
@@ -55,6 +57,7 @@ module.exports = function (app, gestorBDUsers, gestorBDOffers, gestorBDConvers) 
                 return res.json({error: "Ha ocurrido un error"});
             }
             res.status(200);
+            app.get('logger').info(`User ${res.usuario.email} has just sended a message to: ${req.body.receiverID} throught the API`);
             res.json({success: "Updated Successfully", status: 200});
         });
     });
@@ -69,7 +72,8 @@ module.exports = function (app, gestorBDUsers, gestorBDOffers, gestorBDConvers) 
                 return res.send();
             }
             res.status(200);
-            res.json({success: "Updated Successfully", status: 200, conversation: conversation});
+            app.get('logger').info(`User ${res.usuario.email} has requested the conversation throught the API between him and ${req.params.buyerID} about this offer: ${req.params.offerID}`);
+            res.json({success: "Getted Successfully", status: 200, conversation: conversation});
         });
     });
 

@@ -24,19 +24,11 @@ module.exports = function (app, swig, gestorBDUsers) {
             } else {
                 console.log(id);
                 req.session.usuario = usuario;
+                app.get('logger').info(`User ${req.session.usuario.email} has just been registered`);
                 res.redirect("/");
             }
         });
     });
-
-
-    app.get('/test', function (req, res) {
-        gestorBDUsers.getUser({email: 'daniferna@outlook.com'}, function (user) {
-            console.log(user);
-            res.send(user);
-        });
-    });
-
 
     app.get('/login', function (req, res) {
         res.render('login.html');
@@ -55,6 +47,7 @@ module.exports = function (app, swig, gestorBDUsers) {
                 res.render('login.html', {error: "Email o contraseña incorrectos"});
             } else {
                 req.session.usuario = user;
+                app.get('logger').info(`User ${user.email} has logged in`);
                 if (user.isAdmin)
                     res.redirect('/user/list');
                 else
@@ -64,6 +57,7 @@ module.exports = function (app, swig, gestorBDUsers) {
     });
 
     app.get('/logout', function (req, res) {
+        app.get('logger').info(`User ${req.session.usuario.email} has logged off`);
         req.session.usuario = null;
         res.redirect('login');
     });
@@ -105,6 +99,7 @@ module.exports = function (app, swig, gestorBDUsers) {
                     });
                     return;
                 }
+                app.get('logger').info(`User ${req.session.usuario.email} has edited this user: ${id.toString()}`);
                 res.redirect('/user/list');
             })
         });
@@ -119,17 +114,19 @@ module.exports = function (app, swig, gestorBDUsers) {
                 });
                 return;
             }
+            app.get('logger').info(`User ${req.session.usuario.email} has deleted this user: ${id.toString()}`);
             res.redirect('/user/list');
         });
     });
 
     app.post('/user/list/removeUsers', function (req, res) {
-        var IDs = new Array(req.body.usersIDs.length);
+        let IDs = [];
         req.body.usersIDs.forEach(id => IDs.push(gestorBDUsers.mongo.ObjectID(id)));
         gestorBDUsers.deleteUsers(IDs, function (idMongo) {
             if (idMongo == null) {
                 console.log("Error al intentar borrar el usuario con ID: " + idMongo);
             } else {
+                app.get('logger').info(`User ${req.session.usuario.email} has deleted these users: ${IDs}`);
                 res.end();
             }
         });

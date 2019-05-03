@@ -17,11 +17,15 @@ var fs = require('fs');
 var https = require('https');
 var fileUpload = require('express-fileupload');
 var expressSession = require('express-session');
+var log4js = require('log4js');
 
 app.set('rest',rest);
 app.set('jwt', jwt);
 app.engine('html', swig.renderFile);
 app.set('view engine', 'html');
+app.set('logger', log4js.getLogger('app.js'));
+
+app.get('logger').level = 'all';
 
 var initBDs = function(){
     gestorBDUsers.init(app, mongo);
@@ -126,7 +130,7 @@ app.use(function (err, req, res, next) {
     }
 });
 
-// lanzar el servidor
+// Lanzamos el servidor
 app.listen(app.get('port'), function () {
-    console.log("Servidor corriendo en el puerto: " + app.get('port'))
+    app.get('logger').info('Servidor running on port ' + app.get('port'));
 });

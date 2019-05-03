@@ -67,6 +67,7 @@ module.exports = function (app, swig, gestorBDOffers, gestorBDConvers) {
             if (typeof dinero == 'string')
                 return res.render('home', {error: dinero});
             req.session.usuario.dinero = dinero;
+            app.get('logger').info(`User ${req.session.usuario.email} has just bought this offer: ${idOffer.toString()}`);
             res.redirect('/offer/list');
         });
     });
@@ -93,6 +94,7 @@ module.exports = function (app, swig, gestorBDOffers, gestorBDConvers) {
             else if (typeof offerID === 'string')
                 res.render('offer/add', {error: offerID});
             else {
+                app.get('logger').info(`User ${req.session.usuario.email} has added this offer: ${offerID.toString()}`);
                 res.redirect('/');
             }
         });
@@ -104,6 +106,7 @@ module.exports = function (app, swig, gestorBDOffers, gestorBDConvers) {
         gestorBDOffers.removeOffer(id, function (removedOffer) {
             if (removedOffer == null)
                 return res.render("home", {error: "Ha ocurrido un error al intentar borrar la oferta."});
+            app.get('logger').info(`User ${req.session.usuario.email} has deleted this offer: ${id.toString()}`);
             res.redirect('/');
         })
     });
@@ -114,6 +117,7 @@ module.exports = function (app, swig, gestorBDOffers, gestorBDConvers) {
             if (returnedOffer == null)
                 return res.render('home', {error: "Ha habido un error al devolver la oferta."});
             req.session.usuario.dinero += returnedOffer.value;
+            app.get('logger').info(`User ${req.session.usuario.email} has returned this offer: ${id.toString()}`);
             res.redirect('/offer/bought');
         });
     });
