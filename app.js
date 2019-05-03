@@ -89,25 +89,11 @@ routerUsuarioToken.use(function (req, res, next) {
 app.use('/api/offer/*', routerUsuarioToken);
 app.use('/api/user/*', routerUsuarioToken);
 
+
 //Rutas controladores por lógica
 require("./routes/rusers.js")(app, swig, gestorBDUsers); // (app, param1, param2, etc.)
-require("./routes/roffers.js")(app, swig, gestorBDOffers); // (app, param1, param2, etc.)
+require("./routes/roffers.js")(app, swig, gestorBDOffers, gestorBDConvers); // (app, param1, param2, etc.)
 require("./routes/rapi.js")(app, gestorBDUsers, gestorBDOffers, gestorBDConvers);
-
-app.get('/', function (req, res) {
-    var datosEjemplo = [
-        {
-            title: "Ejemplo",
-            description: "Descripcion de ejemplo",
-            value: 5.6
-        },
-        {
-            title: "Ejemplo 2",
-            description: "Hola hola",
-            value: 4
-        }];
-    res.render('home.html', {offers: datosEjemplo});
-});
 
 app.use(function (err, req, res, next) {
     console.log("Error producido: " + err); //we log the error in our db

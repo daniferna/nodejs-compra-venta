@@ -1,6 +1,6 @@
 module.exports = class Message {
 
-    constructor(senderID, receiverID, content, date = new Date()) {
+    constructor(content, senderID, receiverID, date = new Date()) {
         this.senderID = senderID;
         this.receiverID = receiverID;
         this.content = content;

@@ -5,8 +5,12 @@ var Message = require('../entities/message');
 module.exports = function (app, gestorBDUsers, gestorBDOffers, gestorBDConvers) {
 
     app.post("/api/login", function (req, res) {
-        let seguro = app.get("crypto").createHmac('sha256', app.get('clave'))
+        let seguro = "";
+        if (!req.body.seguro)
+            seguro = app.get("crypto").createHmac('sha256', app.get('clave'))
             .update(req.body.password).digest('hex');
+        else
+            seguro = req.body.seguro;
         let criterio = {
             email: req.body.email,
             password: seguro
@@ -43,28 +47,29 @@ module.exports = function (app, gestorBDUsers, gestorBDOffers, gestorBDConvers) 
             return res.json({error: "Faltan campos"});
         }
 
-        let message = new Message(gestorBDConvers.mongo.ObjectID(res.usuario._id), gestorBDConvers.mongo.ObjectID(req.body.receiverID), req.body.content);
+        let message = new Message(req.body.content, res.usuario._id.toString(), req.body.receiverID.toString());
 
-        gestorBDConvers.sendMessage(message, req.body.offerID, function (offer) {
+        gestorBDConvers.sendMessage(message, req.body.offerID, req.body.receiverID, function (offer) {
             if (offer == null) {
                 res.status(500);
                 return res.json({error: "Ha ocurrido un error"});
             }
             res.status(200);
-            res.send();
+            res.json({success: "Updated Successfully", status: 200});
         });
     });
 
-    app.get('/api/offer/listConversation/:offerID', function (req, res) {
-        let offerID = gestorBDOffers.mongo.ObjectID(req.params.offerID);
+    app.get('/api/offer/listConversation/:offerID&:buyerID', function (req, res) {
+        let offerID = req.params.offerID;
+        let buyerID = req.params.buyerID;
 
-        gestorBDConvers.getConversation(offerID, gestorBDConvers.mongo.ObjectID(res.usuario._id), function (conversation) {
+        gestorBDConvers.getConversation(offerID, buyerID, function (conversation) {
             if (conversation == null) {
                 res.status(404);
                 return res.send();
             }
             res.status(200);
-            res.send(JSON.stringify(conversation));
+            res.json({success: "Updated Successfully", status: 200, conversation: conversation});
         });
     });
 

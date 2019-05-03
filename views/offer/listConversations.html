@@ -1,0 +1,39 @@
+{% extends "../base.html" %}
+{% block titulo %} Wallapop {% endblock %}
+{% block contenido_principal %}
+
+<div class="container" style="text-align: center">
+    <h2>Conversaciones activas</h2>
+    <h3>Las conversaciones activas sobre esta oferta en el sistema son las siguientes</h3>
+    <br>
+    <table class="table table-responsive-sm">
+        <thead class="thead-light">
+        <tr>
+            <th style="width: 35%" scope="col">Comprador</th>
+            <th style="width: 35%" scope="col">Oferta</th>
+            <th style="width: 20%" scope="col">Fecha</th>
+            <th style="width: 10%" scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for conversation in conversations %}
+        {% for email in usersEmails %}
+        <tr>
+            <th scope="row">{{ email }}</th>
+            <td>{{ offer.title }}</td>
+            <td>{{ conversation.startDate|date('d/m/y') }}</td>
+            <td>
+                <a class="btn btn-primary" role="button"
+                   href="/offer/chat/{{ offer._id.toString() }}&{{ conversation.buyerID.toString() }}">Conversación</a>
+            </td>
+        </tr>
+        {% endfor %}
+        {% endfor %}
+        </tbody>
+    </table>
+    {% if conversations == null || conversations.length <= 0 %}
+    <p>No hay conversaciones a cerca de esta oferta en este momento.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

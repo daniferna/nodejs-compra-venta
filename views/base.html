@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" href="/images/tabIcon.ico"/>
     <link rel="stylesheet" href="/stylesheets/style.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" type="text/css"
+          rel="stylesheet"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -46,15 +48,8 @@
                 </div>
             </li>
             {% if user.isAdmin %}
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" href="#"
-                   aria-haspopup="true" aria-expanded="false">
-                    Gestión de usuarios
-                </a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="/user/add">Añadir usuario</a>
-                    <a class="dropdown-item" href="/user/list">Ver usuarios</a>
-                </div>
+            <li class="nav-item">
+                <a class="nav-link" href="/user/list">Gestión de usuarios</a>
             </li>
             {% endif %}
             {% endif %}

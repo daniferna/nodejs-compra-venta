@@ -1,7 +1,8 @@
 var Offer = require('../entities/offer');
 var User = require('../entities/user');
+var Cookies = require('../public/javascripts/cookie');
 
-module.exports = function (app, swig, gestorBDOffers) {
+module.exports = function (app, swig, gestorBDOffers, gestorBDConvers) {
 
     app.get('/', function (req, res) {
         if (req.session.usuario == null)
@@ -116,5 +117,97 @@ module.exports = function (app, swig, gestorBDOffers) {
             res.redirect('/offer/bought');
         });
     });
+
+    /*
+    *   CHAT Y CONVERSACIONES
+    * */
+
+    function getTokenREST(rest, req, funcionCallack) {
+        let token = "";
+        let configuracion = {
+            url: "http://localhost:8081/api/login",
+            method: "post",
+            form: {
+                email: req.session.usuario.email,
+                seguro: req.session.usuario.password
+            },
+            dataType: 'json'
+        };
+        rest(configuracion, function (error, response, body) {
+            let objetoRespuesta = JSON.parse(body);
+            token = objetoRespuesta.token;
+            funcionCallack(token);
+        });
+    }
+
+    function getConversationREST(rest, token, offerID, buyerID, funcionCallback) {
+        let configuracion = {
+            url: "http://localhost:8081/api/offer/listConversation/" + offerID + "&" + buyerID,
+            method: "get",
+            headers: {
+                'token': token,
+            },
+            dataType: 'json'
+        };
+        rest(configuracion, function (error, response, body) {
+            if (error || response.statusCode === 404)
+                return funcionCallback({});
+            let objetoRespuesta = JSON.parse(body).conversation;
+            funcionCallback(objetoRespuesta);
+        });
+    }
+
+    app.get('/offer/chat/:offerID&:buyerID', function (req, res) {
+        let rest = app.get("rest");
+        let buyerID = req.params.buyerID;
+        let offerID = req.params.offerID;
+
+        gestorBDOffers.getOffer({_id: gestorBDOffers.mongo.ObjectID(offerID)}, function (oferta) {
+            if (oferta == null)
+                return res.render('conversation', {error: "Ha ocurrido un error."});
+
+            getTokenREST(rest, req, function (token) {
+                getConversationREST(rest, token, offerID, buyerID, function (conversation) {
+                    res.render('conversation', {
+                        offer: oferta,
+                        messages: conversation.messages,
+                        token: token,
+                        buyerID: buyerID
+                    });
+                });
+            });
+        });
+    });
+
+    app.get('/offer/conversations/:offerID', function (req, res) {
+        gestorBDConvers.getOfferConversations(gestorBDOffers.mongo.ObjectID(req.params.offerID), function (offer, usersEmails) {
+            if (offer == null)
+                return res.render('offer/listConversations', {error: "Ha habido un error al cargar las conversaciones de esta oferta"});
+            res.render('offer/listConversations', {
+                conversations: offer.conversations,
+                offer: offer,
+                usersEmails: usersEmails
+            });
+        });
+    });
+
+    // app.get('/offer/chat/part/:offerID&:buyerID', function (req, res) {
+    //     let rest = app.get("rest");
+    //     let buyerID = req.params.buyerID;
+    //     let offerID = req.params.offerID;
+    //
+    //     gestorBDOffers.getOffer({_id: gestorBDOffers.mongo.ObjectID(offerID)}, function (oferta) {
+    //         if (oferta == null)
+    //             return res.render('conversation', {error: "Ha ocurrido un error."});
+    //
+    //         getTokenREST(rest, req, function (token) {
+    //             getConversationREST(rest, token, offerID, buyerID, function (conversation) {
+    //                 res.status(200);
+    //                 res.render('conversationPart', {offer: oferta, messages: conversation.messages, token: token, buyerID: buyerID});
+    //             });
+    //         });
+    //     });
+    //
+    // });
 
 };

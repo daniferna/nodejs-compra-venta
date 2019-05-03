@@ -1,7 +1,8 @@
 module.exports = class Conversation {
 
-    constructor(senderID, startDate = new Date()) {
-        this.senderID = senderID;
+    constructor(buyerID, sellerID, startDate = new Date()) {
+        this.buyerID = buyerID;
+        this.sellerID = sellerID;
         this.setDate(startDate);
         this.messages = [];
     }

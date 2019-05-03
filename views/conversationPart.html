@@ -1,0 +1,21 @@
+<div id="conversationPart" class="msg_history">
+    {% for message in messages %}
+    {% if message.senderID.toString() != user._id.toString() %}
+    <div class="incoming_msg">
+        <div class="incoming_msg_img"><img src="https://ptetutorials.com/images/user-profile.png"
+                                           alt="sunil"></div>
+        <div class="received_msg">
+            <div class="received_withd_msg">
+                <p>{{message.content}}</p>
+                <span class="time_date">{{message.date|date('h:m d/m/y')}}</span></div>
+        </div>
+    </div>
+    {% else %}
+    <div class="outgoing_msg">
+        <div class="sent_msg">
+            <p>{{message.content}}</p>
+            <span class="time_date">{{message.date|date('h:m d/m/y')}}</span></div>
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
