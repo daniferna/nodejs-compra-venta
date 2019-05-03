@@ -89,6 +89,29 @@ routerUsuarioToken.use(function (req, res, next) {
 app.use('/api/offer/*', routerUsuarioToken);
 app.use('/api/user/*', routerUsuarioToken);
 
+//routerOfertas
+var routerOfertas = express.Router();
+routerOfertas.use(function (req, res, next) {
+    let usuario = req.session.usuario;
+    if (usuario == null)
+        res.redirect('/login');
+    else
+        next();
+});
+//Aplicar routerOfertas
+app.use("/offer/", routerOfertas);
+
+//routerUsuarios
+var routerUsuarios = express.Router();
+routerUsuarios.use(function (req, res, next) {
+    let usuario = req.session.usuario;
+    if (usuario == null || !usuario.isAdmin)
+        res.redirect('/login');
+    else
+        next();
+});
+//Aplicar routerUsuarios
+app.use("/user/", routerUsuarios);
 
 //Rutas controladores por lógica
 require("./routes/rusers.js")(app, swig, gestorBDUsers); // (app, param1, param2, etc.)
