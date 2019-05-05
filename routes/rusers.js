@@ -5,12 +5,29 @@ module.exports = function (app, swig, gestorBDUsers) {
         res.render('signup.html');
     });
 
+    /**
+     * @return {boolean}
+     */
+    function isNullOrWhiteSpace(value) {
+
+        if (value == null) return true;
+
+        return value.replace(/\s/g, '').length == 0;
+    }
+
     app.post('/signup', function (req, res) {
         let respuesta = "ERROR";
-        if (req.body.password !== req.body.passwordConfirm) {
-            res.render('signup.html', {errorPasswordConfirm: "Las contraseñas no coinciden"});
-            return;
-        }
+        if (isNullOrWhiteSpace(req.body.email))
+            return res.render('signup.html', {errorEmail: "El campo e-mail no puede estar vacio"});
+
+        if (isNullOrWhiteSpace(req.body.name))
+            return res.render('signup.html', {errorName: "El campo nombre no puede estar vacio"});
+
+        if (isNullOrWhiteSpace(req.body.lastName))
+            return res.render('signup.html', {errorLastName: "El campo apellido no puede estar vacio"});
+
+        if (req.body.password !== req.body.passwordConfirm)
+            return res.render('signup.html', {errorPasswordConfirm: "Las contraseñas no coinciden"});
 
         var seguro = app.get("crypto").createHmac('sha256', app.get('clave')).update(req.body.password).digest('hex');
 
@@ -36,6 +53,13 @@ module.exports = function (app, swig, gestorBDUsers) {
 
     app.post('/login', function (req, res) {
         var respuesta = "ERROR 500";
+
+        if (isNullOrWhiteSpace(req.body.username))
+            return res.render('login.html', {error: "El campo e-mail no puede estar vacio"});
+
+        if (isNullOrWhiteSpace(req.body.password))
+            return res.render('login.html', {error: "El campo password no puede estar vacio"});
+
         var seguro = app.get("crypto").createHmac('sha256', app.get('clave')).update(req.body.password).digest('hex');
         var criterio = {
             email: req.body.username,
@@ -57,7 +81,8 @@ module.exports = function (app, swig, gestorBDUsers) {
     });
 
     app.get('/logout', function (req, res) {
-        app.get('logger').info(`User ${req.session.usuario.email} has logged off`);
+        if (req.session.usuario != null)
+            app.get('logger').info(`User ${req.session.usuario.email} has logged off`);
         req.session.usuario = null;
         res.redirect('login');
     });

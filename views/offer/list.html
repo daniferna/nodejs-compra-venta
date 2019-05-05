@@ -8,9 +8,10 @@
     <br>
     <div style="padding-bottom: 8px">
         <form class="form-inline" method="get" action="/offer/list">
-            <input class="form-control mr-sm-2" type="search" placeholder="Título" name="busqueda" aria-label="Search">
+            <input class="form-control mr-sm-2" type="search" placeholder="Título" id="searchBox" name="busqueda"
+                   aria-label="Search">
             <div>
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+                <button class="btn btn-outline-success my-2 my-sm-0" id="searchButton" type="submit">Buscar</button>
                 <a class="btn btn-outline-primary" style="align-self: end" role="button" id="refresh"
                    href="/offer/list">Refrescar</a>
             </div>
@@ -34,12 +35,13 @@
             <td> {{ offer.value }} &euro;</td>
             {% if !offer.buyer %}
             <td>
-                <a class="btn btn-info" role="button"
+                <a class="btn btn-info" role="button" id="sendMessageButton-{{offer.title}}"
                    href="/offer/chat/{{ offer._id.toString() }}&{{user._id.toString()}}">Mensaje</a>
             </td>
             {% if user.dinero >= offer.value %}
             <td>
-                <a class="btn btn-primary" role="button" href="/offer/buy/{{ offer._id.toString() }}">Comprar</a>
+                <a class="btn btn-primary" id="offerBuyButton-{{offer.title}}" role="button"
+                   href="/offer/buy/{{ offer._id.toString() }}">Comprar</a>
             </td>
             {% else %}
             <td>
@@ -76,7 +78,7 @@
         <li class="page-item" id="next">
             <a class="page-link" href="/offer/list?pg={{ actual +1 }}">Siguiente</a>
         </li>
-        <script>
+        <script type="text/javascript">
             $("#pi-{{ actual}}").addClass("active");
             if ({{
                 ultimaPg

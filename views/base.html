@@ -36,15 +36,16 @@
             {% if user %}
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" href="#"
-                   aria-haspopup="true" aria-expanded="false">
+                   aria-haspopup="true" aria-expanded="false" id="offersManage">
                     Gestión de ofertas
                 </a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" href="/offer/add">Añadir oferta</a>
+                    <a class="dropdown-item" id="addOfferLink" href="/offer/add">Añadir oferta</a>
                     <a class="dropdown-item" href="/">Ver mis ofertas</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="/offer/list">Ver ofertas disponibles</a>
-                    <a class="dropdown-item" href="/offer/bought">Ver ofertas compradas</a>
+                    <a class="dropdown-item" id="seeAvailableOffersButton" href="/offer/list">Ver ofertas
+                        disponibles</a>
+                    <a class="dropdown-item" id="seeBoughtOffersButton" href="/offer/bought">Ver ofertas compradas</a>
                 </div>
             </li>
             {% if user.isAdmin %}
@@ -65,16 +66,18 @@
             {% endif %}
             {% if user %}
             <li class="nav-item">
-                <button type="button" class="btn btn-info" disabled aria-haspopup="true" aria-expanded="false">
+                <button type="button" id="moneyUserCounter" class="btn btn-info" disabled aria-haspopup="true"
+                        aria-expanded="false">
                     {{user.dinero + '€'|default('¿?&euro;')}}
                 </button>
                 <div class="btn-group">
                     <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                            id="userOptionsButton"
                             aria-haspopup="true" aria-expanded="false">
                         {{user.email|default('Usuario')}}
                     </button>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="/logout">Desconectarse</a>
+                        <a class="dropdown-item" id="logoutLink" href="/logout">Desconectarse</a>
                     </div>
                 </div>
             </li>

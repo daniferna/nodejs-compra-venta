@@ -20,13 +20,14 @@
         {% for user in users %}
         <tr class="text-center">
             <td>
-                <input value="{{user._id.toString()}}" name="chkUserID" type="checkbox"/>
+                <input value="{{user._id.toString()}}" name="chkUserID" id="chkUserID-{{user.email}}" type="checkbox"/>
             </td>
             <td>{{user.email}}</td>
             <td>{{user.name}}</td>
             <td>{{user.lastname}}</td>
             <td><a class="btn btn-warning" role="button" href="/user/edit/{{user._id.toString()}}">Modificar</a></td>
-            <td><a class="btn btn-danger" role="button" href="/user/delete/{{user._id.toString()}}">Eliminar</a></td>
+            <td><a class="btn btn-danger" role="button" id="removeUserButton-{{user.email}}"
+                   href="/user/delete/{{user._id.toString()}}">Eliminar</a></td>
         </tr>
         {% endfor %}
         </tbody>
@@ -48,7 +49,7 @@
             url: '/user/list/removeUsers', type: 'post',
             data: {usersIDs: usersIDs},
             success: function (response) {
-                location.reload();
+                window.location.reload();
             }
         });
     });

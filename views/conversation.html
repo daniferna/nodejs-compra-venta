@@ -108,8 +108,9 @@
             type: "POST",
             data: {
                 token: "{{token}}",
-                receiverID: "{{offer.owner._id.toString()}}",
                 offerID: "{{offer._id.toString()}}",
+                offerOwnerID: "{{offer.owner._id.toString()}}",
+                conversation: '{{conversation|json|raw}}',
                 content: $("#textBox").val(),
             },
             dataType: 'json',

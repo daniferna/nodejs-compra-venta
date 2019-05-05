@@ -39,11 +39,13 @@
                 token = respuesta.token;
                 Cookies.set('token', respuesta.token);
                 $("#contenedorPrincipal").load("widget-ofertasDisponibles.html");
+                $("#logoutLink").attr('class', 'nav-link');
             },
             error: function (error) {
                 Cookies.remove('token');
+                $("#alertUserNotFound").remove();
                 $("#loginForm")
-                    .prepend("<div class='alert alert-danger'>Usuario no encontrado</div>");
+                    .prepend("<div id='alertUserNotFound' class='alert alert-danger'>Usuario no encontrado</div>");
             }
         });
     });

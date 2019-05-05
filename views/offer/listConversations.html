@@ -9,25 +9,28 @@
     <table class="table table-responsive-sm">
         <thead class="thead-light">
         <tr>
-            <th style="width: 35%" scope="col">Comprador</th>
-            <th style="width: 35%" scope="col">Oferta</th>
+            <th style="width: 30%" scope="col">Comprador</th>
+            <th style="width: 30%" scope="col">Oferta</th>
             <th style="width: 20%" scope="col">Fecha</th>
+            <th style="width: 10%" scope="col"></th>
             <th style="width: 10%" scope="col"></th>
         </tr>
         </thead>
         <tbody>
         {% for conversation in conversations %}
-        {% for email in usersEmails %}
         <tr>
-            <th scope="row">{{ email }}</th>
+            <th scope="row">{{ conversation.userEmail }}</th>
             <td>{{ offer.title }}</td>
             <td>{{ conversation.startDate|date('d/m/y') }}</td>
             <td>
-                <a class="btn btn-primary" role="button"
+                <a class="btn btn-primary" role="button" id="conversationButton-{{conversation.userEmail}}"
                    href="/offer/chat/{{ offer._id.toString() }}&{{ conversation.buyerID.toString() }}">Conversación</a>
             </td>
+            <td>
+                <a class="btn btn-danger" role="button" id="removeButton-{{conversation.userEmail}}"
+                   href="/offer/chat/delete/{{ offer._id.toString() }}&{{ conversation.buyerID.toString() }}">Eliminar</a>
+            </td>
         </tr>
-        {% endfor %}
         {% endfor %}
         </tbody>
     </table>

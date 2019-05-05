@@ -117,7 +117,7 @@ module.exports = function (app, swig, gestorBDOffers, gestorBDConvers) {
             if (returnedOffer == null)
                 return res.render('home', {error: "Ha habido un error al devolver la oferta."});
             req.session.usuario.dinero += returnedOffer.value;
-            app.get('logger').info(`User ${req.session.usuario.email} has returned this offer: ${id.toString()}`);
+            app.get('logger').info(`User ${req.session.usuario.email} has returned this offer: ${idOffer.toString()}`);
             res.redirect('/offer/bought');
         });
     });
@@ -161,6 +161,23 @@ module.exports = function (app, swig, gestorBDOffers, gestorBDConvers) {
         });
     }
 
+    function deleteConversationREST(rest, token, offerID, buyerID, funcionCallback) {
+        let configuracion = {
+            url: "http://localhost:8081/api/offer/deleteConversation/" + offerID + "&" + buyerID,
+            method: "get",
+            headers: {
+                'token': token,
+            },
+            dataType: 'json'
+        };
+        rest(configuracion, function (error, response, body) {
+            if (error || response.statusCode === 500)
+                return funcionCallback({});
+            let objetoRespuesta = JSON.parse(body).conversation;
+            funcionCallback(objetoRespuesta);
+        });
+    }
+
     app.get('/offer/chat/:offerID&:buyerID', function (req, res) {
         let rest = app.get("rest");
         let buyerID = req.params.buyerID;
@@ -175,9 +192,27 @@ module.exports = function (app, swig, gestorBDOffers, gestorBDConvers) {
                     res.render('conversation', {
                         offer: oferta,
                         messages: conversation.messages,
+                        conversation: conversation,
                         token: token,
                         buyerID: buyerID
                     });
+                });
+            });
+        });
+    });
+
+    app.get('/offer/chat/delete/:offerID&:buyerID', function (req, res) {
+        let rest = app.get("rest");
+        let buyerID = req.params.buyerID;
+        let offerID = req.params.offerID;
+
+        gestorBDOffers.getOffer({_id: gestorBDOffers.mongo.ObjectID(offerID)}, function (oferta) {
+            if (oferta == null)
+                return res.render('conversation', {error: "Ha ocurrido un error."});
+
+            getTokenREST(rest, req, function (token) {
+                deleteConversationREST(rest, token, offerID, buyerID, function (conversation) {
+                    res.redirect('/offer/conversations/' + offerID);
                 });
             });
         });
@@ -187,10 +222,12 @@ module.exports = function (app, swig, gestorBDOffers, gestorBDConvers) {
         gestorBDConvers.getOfferConversations(gestorBDOffers.mongo.ObjectID(req.params.offerID), function (offer, usersEmails) {
             if (offer == null)
                 return res.render('offer/listConversations', {error: "Ha habido un error al cargar las conversaciones de esta oferta"});
+            for (i = 0; i < offer.conversations.length; i++) {
+                offer.conversations[i].userEmail = usersEmails[i];
+            }
             res.render('offer/listConversations', {
                 conversations: offer.conversations,
                 offer: offer,
-                usersEmails: usersEmails
             });
         });
     });

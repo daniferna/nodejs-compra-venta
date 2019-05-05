@@ -31,18 +31,16 @@
     </a>
     <div class="collapse navbar-collapse" id="navBarContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" href="#"
+            <li class="nav-item">
+                <a class="nav-link" role="button" data-toggle="dropdown" href="#" onclick="widgetOfertasDisponibles()"
                    aria-haspopup="true" aria-expanded="false">
                     Gestión de ofertas
                 </a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="/offer/add">Añadir oferta</a>
-                    <a class="dropdown-item" href="/">Ver mis ofertas</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#" onclick="widgetOfertasDisponibles()">Ver ofertas disponibles</a>
-                    <a class="dropdown-item" href="/offer/bought">Ver ofertas compradas</a>
-                </div>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item">
+                <a class="nav-link" role="button" onclick="logout()" id="logoutLink" href="#">Desconectarse</a>
             </li>
         </ul>
     </div>
@@ -75,6 +73,13 @@
             $("#contenedorPrincipal").load("widget-ofertasDisponibles.html");
         else
             $("#contenedorPrincipal").load("widget-login.html");
+    }
+
+    function logout() {
+        Cookies.set('token', null);
+        token = null;
+        $("#contenedorPrincipal").load("widget-login.html");
+        $("#logoutLink").addClass("disabled");
     }
 
     if (Cookies.get('token') != null) {

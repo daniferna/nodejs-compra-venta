@@ -26,7 +26,8 @@
             <td> {{ offer.value }} &euro;</td>
             {% if offer.conversations && offer.conversations.length >= 1 %}
             <td>
-                <a class="btn btn-primary" role="button" href="/offer/conversations/{{ offer._id.toString() }}">Conversaciones</a>
+                <a class="btn btn-primary" role="button" id="conversationsButton-{{offer.title}}"
+                   href="/offer/conversations/{{ offer._id.toString() }}">Conversaciones</a>
             </td>
             {% else %}
             <td>
@@ -35,7 +36,8 @@
             </td>
             {% endif %}
             <td>
-                <a class="btn btn-danger" role="button" href="/offer/delete/{{ offer._id.toString() }}">Eliminar</a>
+                <a class="btn btn-danger" id="offerRemoveButton-{{offer.title}}" role="button"
+                   href="/offer/delete/{{ offer._id.toString() }}">Eliminar</a>
             </td>
         </tr>
         {% endfor %}

@@ -92,6 +92,7 @@ routerUsuarioToken.use(function (req, res, next) {
 // Aplicar routerUsuarioToken
 app.use('/api/offer/*', routerUsuarioToken);
 app.use('/api/user/*', routerUsuarioToken);
+app.use('/api/message/*', routerUsuarioToken);
 
 //routerOfertas
 var routerOfertas = express.Router();
