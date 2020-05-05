@@ -9,4 +9,4 @@ Aplicación de compra-venta de artículos entre particulares desarrollada como t
 - Uso de JQuery para navegar por la web sin recargar la página. Se accede mediante /clienteREST.
 - Dispone de sistema de mensajeria instanea entre los usuarios.
 - Uso de Thymeleaf y BootStrap para el front-end.
-- Uso de Selenium en un proyecto Java a parte para realizar pruebas unitarias en la web una vez desplegada.
+- Uso de Selenium en un proyecto Java a parte para realizar pruebas de uso en la web una vez desplegada.
