@@ -10,3 +10,6 @@ Aplicación de compra-venta de artículos entre particulares desarrollada como t
 - Dispone de sistema de mensajeria instanea entre los usuarios.
 - Uso de Thymeleaf y BootStrap para el front-end.
 - Uso de Selenium en un proyecto Java a parte para realizar pruebas de uso en la web una vez desplegada.
+
+### Despliegue
+Se ha de ejecutar node install. Una vez finalizado node app en la carpeta raiz y estara desplegado en localhost:8081 por defecto.
